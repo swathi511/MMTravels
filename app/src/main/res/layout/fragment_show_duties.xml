@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton android:id="@+id/fsd_ib_refresh"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_refresh"
+        android:layout_margin="16dp"
+        android:layout_gravity="center"
+        android:background="@drawable/round_refresh_bg"
+        android:visibility="gone"/>
+
+    <TextView android:id="@+id/fsd_tv_no_duties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_duties"
+        android:textSize="16sp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fsd_rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

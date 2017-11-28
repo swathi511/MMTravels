@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">MM Travels</string>
+    <string name="title_activity_maps">MM Travels</string>
+    <string-array name="navigation_drawer_items_array">
+        <item>Book a Taxi</item>
+        <item>Your Profile</item>
+        <item>Your Rides</item>
+    </string-array>
+    <string name="dsno">DS No</string>
+    <string name="xxx">xxx</string>
+    <string name="reporting_date">Reporting Date</string>
+    <string name="reporting_time">Reporting Time</string>
+    <string name="reporting_place">Pickup Point</string>
+    <string name="more">more ...</string>
+    <string name="duty_status">Duty Status</string>
+    <string name="neww">New</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="b_type">Booking Type</string>
+    <string name="travel">Travel Type</string>
+    <string name="g_name">Guest Name</string>
+    <string name="g_mobile">Guest Mobile</string>
+    <string name="start_duty">Start Duty</string>
+    <string name="no_duties">No Duties Allocated</string>
+    <string name="validate_otp">Validate OTP</string>
+    <string name="drop_guest">Drop Guest</string>
+    <string name="generate_otp">Request OTP</string>
+    <string name="finish_duty">Finish Duty</string>
+    <string name="current_location">Current Location</string>
+    <string name="searching_network">Searching Network ...</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="duty_summary">Duty Summary</string>
+    <string name="time_started">Time Started</string>
+    <string name="time_ended">Time Ended</string>
+    <string name="moving_time">Moving Time</string>
+    <string name="total_kms">Total Kms</string>
+    <string name="idle_time">Idle Time</string>
+    <string name="upload">Upload Image</string>
+    <string name="home">Home</string>
+    <string name="retry">Retry</string>
+    <string name="send_images">Send Images</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="company_code">Company Code</string>
+    <string name="login">Login</string>
+    <string name="clear">Clear</string>
+    <string name="save">Save</string>
+    <string name="send_data">Send Data</string>
+    <string name="save_data">Save Data</string>
+    <string name="accept">Accept</string>
+</resources>

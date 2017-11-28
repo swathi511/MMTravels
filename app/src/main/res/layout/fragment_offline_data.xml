@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dsno"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_dsno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/time_started"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_tstart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/time_ended"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_tend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/total_kms"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_kms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/moving_time"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_movetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/idle_time"
+            android:textSize="14sp"
+            android:textColor="@color/colorAsh"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <TextView android:id="@+id/fod_tv_idletime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xxx"
+            android:textSize="16sp"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="1"
+            android:gravity="right"/>
+
+    </LinearLayout>
+
+    <Button android:id="@+id/fod_bt_sendData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_data"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="13sp"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:layout_below="@+id/amd_tv_gmobile_text"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="18dp"
+        android:background="@drawable/bt_stroke_bg"
+        android:gravity="center"
+        android:layout_gravity="center" />
+
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <LinearLayout android:id="@+id/fod_ll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button android:id="@+id/fod_bt_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upload"
+                android:background="@drawable/bt_solid_bg"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+
+                android:textSize="12sp"
+               />
+            <Button android:id="@+id/fod_bt_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home"
+                android:background="@drawable/bt_stroke_bg"
+                android:textColor="@color/colorWhite"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:visibility="gone"
+
+                android:textSize="12sp"
+                />
+        </LinearLayout>
+
+
+        <Button android:id="@+id/fod_bt_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:background="@drawable/bt_solid_bg"
+            android:textColor="@color/colorPrimary"
+            android:layout_below="@+id/fod_ll2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:textSize="12sp"
+            />
+
+        <LinearLayout android:id="@+id/fod_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fod_bt_retry"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_margin="8dp">
+            <ImageView android:id="@+id/fod_iv1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="4dp"/>
+            <ImageView android:id="@+id/fod_iv2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="4dp"/>
+            <ImageView android:id="@+id/fod_iv3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="4dp"/>
+            <ImageView android:id="@+id/fod_iv4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="4dp"/>
+        </LinearLayout>
+
+        <Button android:id="@+id/fod_bt_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_images"
+            android:layout_below="@+id/fod_ll"
+            android:background="@drawable/bt_solid_bg"
+            android:textColor="@color/colorPrimary"
+            android:layout_margin="24dp"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+
+
+</LinearLayout>

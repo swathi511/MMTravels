@@ -1,0 +1,366 @@
+<android.support.design.widget.CoordinatorLayout android:id="@+id/mp_clayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activity.MapsActivity" />
+
+        <LinearLayout android:id="@+id/ftro_ll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#bdbdbd">
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="10sp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/dsno"-->
+                <!--android:layout_margin="8dp"-->
+                <!--android:textColor="#ffffff"/>-->
+            <!--<TextView android:id="@+id/ftro_tv_dsno"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="10sp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="**DSNO**"-->
+                <!--android:layout_margin="8dp"-->
+                <!--android:textColor="#ffffff"/>-->
+
+            <!--<View-->
+                <!--android:layout_width="0.5dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="#ffffff"/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="DS No"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="right"/>
+            <TextView android:id="@+id/ftro_tv_btype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="**Booking Type**"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="left"/>
+        </LinearLayout>
+
+        <View android:id="@+id/ftro_vw1"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/ftro_ll1"
+            android:background="#000000"
+            android:alpha="0.4"/>
+
+        <LinearLayout android:id="@+id/ftro_ll3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#bdbdbd"
+            android:layout_below="@+id/ftro_vw1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="Reporting Date and Time"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="right"/>
+            <TextView android:id="@+id/ftro_tv_rdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="** Reporting Date **"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="left"/>
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:alpha="0.6"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="@string/reporting_time"
+                android:layout_margin="8dp"
+                android:textColor="#ffffff"
+                android:visibility="gone"/>
+            <TextView android:id="@+id/ftro_tv_rtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="** Reporting Time **"
+                android:layout_margin="8dp"
+                android:textColor="#ffffff"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <View android:id="@+id/ftro_vw2"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/ftro_ll3"
+            android:background="#000000"
+            android:alpha="0.4"/>
+
+        <LinearLayout android:id="@+id/ftro_ll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#bdbdbd"
+            android:layout_below="@+id/ftro_vw2">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="@string/g_name"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="right"/>
+            <TextView android:id="@+id/ftro_tv_gname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="***** Guest Name *****"
+                android:layout_margin="8dp"
+                android:textColor="#000000"
+                android:gravity="left"/>
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#ffffff"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="@string/g_mobile"
+                android:layout_margin="8dp"
+                android:textColor="#ffffff"
+                android:visibility="gone"/>
+            <TextView android:id="@+id/ftro_tv_gmobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:text="** Guest Mobile **"
+                android:layout_margin="8dp"
+                android:textColor="#ffffff"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ftro_ll_cont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rect_black_bg"
+            android:padding="8dp"
+            android:layout_below="@+id/ftro_ll2">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/car_connected"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"/>
+            <View android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#424242"/>
+            <TextView
+                android:id="@+id/ftro_tv_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_location"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/ftro_tv_ntwrk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/searching_network"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp"
+            android:layout_below="@+id/ftro_ll_cont" />
+
+        <RelativeLayout android:id="@+id/ftro_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <LinearLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+
+            <Button android:id="@+id/ftro_bt_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/generate_otp"
+                android:background="@drawable/bt_stroke_bg"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="13sp"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="false"
+                android:layout_weight="1"/>
+
+            <Button android:id="@+id/ftro_bt_validate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/validate_otp"
+                android:background="@drawable/bt_stroke_bg"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="13sp"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="false"
+                android:visibility="gone" />
+
+            </LinearLayout>
+            <Button android:id="@+id/ftro_bt_drop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drop_guest"
+                android:background="@drawable/bt_stroke_bg"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="13sp"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+            <LinearLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+
+                <Button android:id="@+id/ftro_bt_finish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/finish_duty"
+                    android:background="@drawable/bt_stroke_bg"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorWhite"
+                    android:textAllCaps="false"
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
+                <Button android:id="@+id/ftro_bt_store_offline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save Data"
+                    android:background="@drawable/bt_stroke_bg"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorWhite"
+                    android:textAllCaps="false"
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ftro_ll_cont"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp">
+            <ImageButton
+                android:id="@+id/ftro_ib_stop"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:textColor="#ffffff"
+                android:src="@drawable/ic_stop"
+                android:layout_margin="16dp"
+                android:background="@drawable/round_stop_bg"
+                android:textSize="16sp"
+                android:textAllCaps="false"/>
+            <ImageButton android:id="@+id/ftro_ib_call"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/ic_phone"
+                android:layout_below="@+id/ftro_ib_stop"
+                android:layout_margin="16dp"
+                android:background="@drawable/round_call_bg"/>
+            <Button
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/round_otp_bg"
+                android:text="OTP"
+                android:layout_below="@+id/ftro_ib_call"
+                android:layout_margin="16dp"
+                android:textColor="@color/colorBlack"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+
+
+        <TextView android:id="@+id/ftro_tv_notify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All Notifications comes here"
+            android:gravity="center"
+            android:background="#000000"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:layout_below="@+id/ftro_rl"
+            android:padding="12dp" />
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
