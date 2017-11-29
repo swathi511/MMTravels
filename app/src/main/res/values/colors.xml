@@ -16,8 +16,10 @@
     <!--<color name="colorAsh">#414040</color>-->
     <!--<color name="colorPrimaryLight">#b2dfdb</color>-->
 
-    <color name="colorPrimary">#ae262b</color>
-    <color name="colorPrimaryDark">#000000</color>
+  <!--  <color name="colorPrimary">#ae262b</color>
+    <color name="colorPrimaryDark">#000000</color>-->
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#F44336</color>
     <color name="colorAccent">#363636</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
