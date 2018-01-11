@@ -3,6 +3,7 @@ package com.hjsoft.mmtravels.adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,15 +120,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         holder.lLayout.setTag(position);
 
-        if(data.getAcceptancestatus().equals("Y"))
-        {
-            if(data.getStatus().equals("P"))
-            {
-                holder.tvStatus.setVisibility(View.VISIBLE);
-                holder.tvStatus.setText("Ongoing");
-                holder.tvAccept.setVisibility(View.GONE);
-                holder.tvStart.setVisibility(View.VISIBLE);
-                holder.tvStart.setText("Continue Duty");
+        if(data.getAcceptancestatus()!=null) {
+
+            if (data.getAcceptancestatus().equals("Y")) {
+                if (data.getStatus().equals("P")) {
+                    holder.tvStatus.setVisibility(View.VISIBLE);
+                    holder.tvStatus.setText("Ongoing");
+                    holder.tvAccept.setVisibility(View.GONE);
+                    holder.tvStart.setVisibility(View.VISIBLE);
+                    holder.tvStart.setText("Continue Duty");
+                }
             }
         }
 
@@ -138,6 +140,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 int p=(int)holder.lLayout.getTag();
                 DutyData d;
                 d=customArrayList.get(p);
+
+                Log.i("data",d.getDslipid()+":"+d.getDriverid()+":"+d.getStartdate());
 
                 JsonObject v=new JsonObject();
                 v.addProperty("dslipid",d.getDslipid());

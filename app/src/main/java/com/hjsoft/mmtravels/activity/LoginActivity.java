@@ -208,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
                     v.addProperty("pwd",stPwd);
                     v.addProperty("version",version);
 
-                    //System.out.println("details are"+stUname+stPwd+stCode);
+                   System.out.println("details are"+stUname+stPwd+stCode);
 
                     Call<Pojo>login=REST_CLIENT.validate(v);
                     login.enqueue(new Callback<Pojo>() {

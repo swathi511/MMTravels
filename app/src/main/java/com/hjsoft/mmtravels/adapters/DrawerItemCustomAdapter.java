@@ -49,7 +49,7 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<NavigationData> {
 
         if(position==mSelectedItem)
         {
-            textViewName.setTextColor(Color.parseColor("#d74545"));
+            textViewName.setTextColor(Color.parseColor("#207bc8"));
             textViewName.setTypeface(Typeface.DEFAULT_BOLD);
             textViewName.setTextSize(14);
         }

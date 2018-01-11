@@ -746,8 +746,12 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
 
                                     /// main functionality
 
+//                                    String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+//                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyBGK303F1k8pU7ncriAcctGuju_tw-gTIs";
+
+
                                     String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
-                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyBGK303F1k8pU7ncriAcctGuju_tw-gTIs";
+                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E";
 
                                     System.out.println(urlString);
 
@@ -864,7 +868,7 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
                         }
                         else {
 
-                            Toast.makeText(getActivity(),"Fetching data.. Please wait!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(),"Getting Location.. Please wait!",Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
                             alertDialog.dismiss();
                         }
@@ -1660,6 +1664,10 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
 
                         first = false;
                     }
+                }
+                else {
+
+                    Toast.makeText(getActivity(),"Getting Location.. Please wait!",Toast.LENGTH_SHORT).show();
                 }
             }
         };

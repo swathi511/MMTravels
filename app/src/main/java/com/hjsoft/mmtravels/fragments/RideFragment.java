@@ -657,11 +657,16 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
                                     stWaypoints = dbAdapter.getWaypoints(stDSNo);
                                     // System.out.println("waypoints " + stWaypoints);
-
-                                    String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
-                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyBGK303F1k8pU7ncriAcctGuju_tw-gTIs";
+//
+//                                    String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+//                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyBGK303F1k8pU7ncriAcctGuju_tw-gTIs";
 
                                     // System.out.println(urlString);
+
+
+                                    String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+                                            "origin=" + pickupLat + "," + pickupLong + "&destination=" + dropLat + "," + dropLong + "&waypoints=" + stWaypoints + "&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E";
+
 
                                     Call<DistancePojo> call = REST_CLIENT.getDistanceDetails(urlString);
                                     call.enqueue(new Callback<DistancePojo>() {
@@ -771,7 +776,7 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                         }
                         else {
 
-                            Toast.makeText(getActivity(),"Fetching data.. Please wait!",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(),"Getting Location.. Please wait!",Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
                             alertDialog.dismiss();
                         }
@@ -1550,6 +1555,10 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
                         first = false;
                     }
+                }
+                else {
+
+                    Toast.makeText(getActivity(),"Getting Location.. Please wait!",Toast.LENGTH_SHORT).show();
                 }
             }
         };
