@@ -12,11 +12,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RestClient {
 
-    private static String BASE_URL="http://183.82.147.129:1353/api/";
+    private static String BASE_URL="http://192.168.1.5:1522/api/";
     private static API REST_CLIENT;
-    //http://192.168.1.14:1533/api/
-    //http://183.82.147.129:1353/api/
-    //http://124.123.42.176:1312/api/
+    //http://192.168.1.6:1522/api/
+
+
     static {
         setupRestClient();
     }

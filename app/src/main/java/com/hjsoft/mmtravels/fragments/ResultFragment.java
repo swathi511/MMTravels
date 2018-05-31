@@ -77,6 +77,7 @@ public class ResultFragment extends Fragment {
     SessionManager session;
     String stDsno;
     int position;
+    float startToReportKms,finishToGarageKms,startToReportHrs,finishToGarageHrs;
 
     @Nullable
     @Override
@@ -131,6 +132,10 @@ public class ResultFragment extends Fragment {
         signature=b.getString("sign");
         final String pause=b.getString("pause");
         position=b.getInt("position");
+        startToReportKms=b.getFloat("startToReportKms");
+        startToReportHrs=b.getFloat("startToReportHrs");
+        finishToGarageKms=b.getFloat("finishToGarageKms");
+        finishToGarageHrs=b.getFloat("finishToGarageHrs");
 
        //
         // Toast.makeText(getActivity(),position,Toast.LENGTH_SHORT).show();
@@ -144,7 +149,8 @@ public class ResultFragment extends Fragment {
         //tvRdate.setText(data.getStartdate());
         tvRtime.setText(String.valueOf(data.getStarttime()));
         tvGname.setText(data.getGuestname());
-        tvGmobile.setText(data.getGuestmobile());
+        //tvGmobile.setText(data.getGuestmobile());
+        tvGmobile.setText("9198xxxxxxxx");
 
         String s=data.getStartdate();
         try {
@@ -199,6 +205,9 @@ public class ResultFragment extends Fragment {
 
         }catch (ParseException e) {e.printStackTrace();}
 
+        System.out.println("idle time is "+idle_time);
+        System.out.println("total time is "+tot_time);
+
         SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
@@ -233,6 +242,9 @@ public class ResultFragment extends Fragment {
 
         final String val=String.valueOf(res);
 
+        //System.out.println("signature is &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        //System.out.println(signature);
+
 
         final JsonObject v=new JsonObject();
         v.addProperty("dslipid",data.getDslipid());
@@ -246,6 +258,26 @@ public class ResultFragment extends Fragment {
         v.addProperty("signature",signature);
         v.addProperty("idletime",pause+"$"+jDetails+"$");
         v.addProperty("status","Y");
+        v.addProperty("startToReportKms",startToReportKms);
+        v.addProperty("startToReportHrs",startToReportHrs);
+        v.addProperty("finishToGarageKms",finishToGarageKms);
+        v.addProperty("finishToGarageHrs",finishToGarageHrs);
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(data.getDslipid());
+        System.out.println(data.getDriverid());
+        System.out.println(data.getStartdate());
+        System.out.println(val);
+        System.out.println(stAfterPickUp);
+        System.out.println(stBeforePickUp);
+        System.out.println(stAfterDrop);
+        System.out.println(tot_time);
+        System.out.println(pause+"$"+jDetails+"$");
+        //System.out.println(signature);
+
+        System.out.println(startToReportKms+":"+startToReportHrs+":"+finishToGarageKms+":"+finishToGarageHrs);
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
         Call<UpdatePojo> call=REST_CLIENT.sendJourneyDetails(v);
         call.enqueue(new Callback<UpdatePojo>() {

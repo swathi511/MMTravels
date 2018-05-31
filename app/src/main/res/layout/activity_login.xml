@@ -114,6 +114,11 @@
             android:fontFamily="sans-serif-condensed"
             android:visibility="gone"/>
 
+        <ImageView android:id="@+id/al_iv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/al_ll"/>
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -91,6 +91,15 @@ public class HomePojo {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("Garagestatus")
+    @Expose
+    private String Garagestatus;
+    @SerializedName("Latitude")
+    @Expose
+    private String Latitude;
+    @SerializedName("Longitude")
+    @Expose
+    private String Longitude;
 
     /**
      *
@@ -566,5 +575,29 @@ public class HomePojo {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getGaragestatus() {
+        return Garagestatus;
+    }
+
+    public void setGaragestatus(String garagestatus) {
+        Garagestatus = garagestatus;
+    }
+
+    public String getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        Latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        Longitude = longitude;
     }
 }

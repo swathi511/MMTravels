@@ -23,7 +23,7 @@ import retrofit2.http.Url;
  */
 public interface API {
 
-    @POST("Login/Checklogin")
+    @POST("DriverLogin/Checklogin")
     Call<Pojo> validate(@Body JsonObject v);
 
     @GET("dslip/GetdslipInfo")

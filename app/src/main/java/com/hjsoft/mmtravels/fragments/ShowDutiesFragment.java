@@ -123,7 +123,8 @@ public class ShowDutiesFragment extends Fragment {
 
                         dutyData.add(new DutyData(content.getDslipid(),content.getUddsno(),content.getBookingtype(),content.getStartdate(),content.getStarttime(),
                                 content.getBookedvehicleid(),content.getBookedvehicletype(),content.getTraveltype(),
-                                content.getPointpointid(),content.getPickuplocation(),content.getSlabname(),content.getGuestname(),content.getGuestmobile(),content.getDriverid(),content.getAcceptancestatus(),content.getStatus(),bookingStatus));
+                                content.getPointpointid(),content.getPickuplocation(),content.getSlabname(),content.getGuestname(),content.getGuestmobile(),content.getDriverid(),content.getAcceptancestatus(),content.getStatus(),bookingStatus,
+                                content.getGaragestatus(),content.getLatitude(),content.getLongitude()));
 
                         bookingStatus=false;
                     }

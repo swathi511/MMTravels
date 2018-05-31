@@ -51,11 +51,15 @@ public class SignatureActivity extends AppCompatActivity {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
                 btImg.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
                 //getByteCount()
                 int byte_size=byteSizeOf(btImg);
                 //System.out.println("byte size of the image is "+byte_size);
+
                 byte[] byteArray = stream.toByteArray();
                 String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+                //System.out.println(encodedImage);
 
                 Intent intent=new Intent();
                 intent.putExtra("Sign",encodedImage);

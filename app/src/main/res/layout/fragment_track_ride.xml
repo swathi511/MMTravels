@@ -149,7 +149,7 @@
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
-                android:background="#ffffff"/>
+                android:background="#000000"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,8 +157,7 @@
                 android:layout_weight="1"
                 android:text="@string/g_mobile"
                 android:layout_margin="8dp"
-                android:textColor="#ffffff"
-                android:visibility="gone"/>
+                android:textColor="#000000" />
             <TextView android:id="@+id/ftr_tv_gmobile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -166,8 +165,7 @@
                 android:layout_weight="1"
                 android:text="** Guest Mobile **"
                 android:layout_margin="8dp"
-                android:textColor="#ffffff"
-                android:visibility="gone"/>
+                android:textColor="#000000" />
         </LinearLayout>
 
         <LinearLayout

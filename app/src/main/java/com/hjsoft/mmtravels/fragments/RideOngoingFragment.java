@@ -53,6 +53,7 @@ import com.hjsoft.mmtravels.activity.TrackRideOngoing;
 import com.hjsoft.mmtravels.adapters.DBAdapter;
 import com.hjsoft.mmtravels.model.Distance;
 import com.hjsoft.mmtravels.model.DistancePojo;
+import com.hjsoft.mmtravels.model.Duration;
 import com.hjsoft.mmtravels.model.DutyData;
 import com.hjsoft.mmtravels.model.DutyUpdates;
 import com.hjsoft.mmtravels.model.Leg;
@@ -150,6 +151,8 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
     ProgressDialog progressDialog;
     int position;
     GPSTracker gps;
+    float startToReportKms=0,finishToGarageKms=0,startToReportHrs=0,finishToGarageHrs=0;
+    String garageStatus,latitude,longitude;
 
 
 
@@ -227,6 +230,9 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
         tvGmobile.setText(data.getGuestmobile());
         stGuestMobile=data.getGuestmobile();
         gNumber=data.getGuestmobile();
+        garageStatus=data.getGarageStatus();
+        latitude=data.getLatitude();
+        longitude=data.getLongitude();
 
         String s=data.getStartdate();
         try {
@@ -284,8 +290,22 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
         switch (status)
         {
             case "started":btPickUp.setVisibility(View.VISIBLE);
+                if(data.getGuestmobile().equals(""))
+                {
+                    btPickUp.setVisibility(View.GONE);
+                    btValidate.setVisibility(View.GONE);
+                    tvGmobile.setText("NA");
+                    btDrop.setVisibility(View.VISIBLE);
+                }
                 break;
             case "otp":btValidate.setVisibility(View.VISIBLE);
+                if(data.getGuestmobile().equals(""))
+                {
+                    btPickUp.setVisibility(View.GONE);
+                    btValidate.setVisibility(View.GONE);
+                    tvGmobile.setText("NA");
+                    btDrop.setVisibility(View.VISIBLE);
+                }
                 break;
             case "validated":btPickUp.setVisibility(View.GONE);
                 btDrop.setVisibility(View.VISIBLE);
@@ -407,6 +427,10 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
                         v.addProperty("signature"," ");
                         v.addProperty("idletime"," ");
                         v.addProperty("status","P");
+                        v.addProperty("startToReportKms",startToReportKms);
+                        v.addProperty("startToReportHrs",startToReportHrs);
+                        v.addProperty("finishToGarageKms",finishToGarageKms);
+                        v.addProperty("fiishToGarageHrs",finishToGarageHrs);
 
                         Call<UpdatePojo> call=REST_CLIENT.sendJourneyDetails(v);
                         call.enqueue(new Callback<UpdatePojo>() {
@@ -802,33 +826,48 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
                                                     progressDialog.dismiss();
                                                     alertDialog.dismiss();
 
-                                                    Bundle b = new Bundle();
-                                                    b.putFloat("Result", finalDistance);
-                                                    b.putString("starting_time", startingTime);
-                                                    b.putString("ending_time", endingTime);
-                                                    b.putString("idle_time", date3);
-                                                    b.putInt("position", position);
-                                                    b.putString("jDetails", jsondata);
-                                                    b.putString("stBeforePickUp", stBeforePickUp);
-                                                    b.putString("stAfterPickUp", stAfterPickUp);
-                                                    b.putString("stAfterDrop", stAfterDrop);
-                                                    b.putString("sign", signature);
-                                                    String[] timeArray = date3.split(":");
-                                                    String hh = timeArray[0];
-                                                    String mm = timeArray[1];
-                                                    final String p = hh + "." + mm;
-                                                    pause = p + "" + diff_times;
-                                                    // System.out.println("pause" + pause);
-                                                    b.putString("pause", pause);
-                                                    res = 0;
-                                                    // Intent j=new Intent(getActivity(),ResultActivity.class);
-                                                    Intent j = new Intent(getActivity(), ResultActivity.class);
-                                                    j.putExtras(b);
-                                                    j.putExtra("mylist", myList);
-                                                    j.putExtra("position", position);
-                                                    //j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(j);
-                                                    getActivity().finish();
+
+                                                    System.out.println("garage status isssssss "+garageStatus);
+
+                                                    if(garageStatus.equals("Applicable"))
+                                                    {
+                                                        getDistanceAndTime(latitude,longitude);
+                                                    }
+                                                    else {
+
+                                                        Bundle b = new Bundle();
+                                                        b.putFloat("Result", finalDistance);
+                                                        b.putString("starting_time", startingTime);
+                                                        b.putString("ending_time", endingTime);
+                                                        b.putString("idle_time", date3);
+                                                        b.putInt("position", position);
+                                                        b.putString("jDetails", jsondata);
+                                                        b.putString("stBeforePickUp", stBeforePickUp);
+                                                        b.putString("stAfterPickUp", stAfterPickUp);
+                                                        b.putString("stAfterDrop", stAfterDrop);
+                                                        b.putString("sign", signature);
+                                                        b.putFloat("startToReportKms", startToReportKms);
+                                                        b.putFloat("startToReportHrs", startToReportHrs);
+                                                        b.putFloat("finishToGarageKms", finishToGarageKms);
+                                                        b.putFloat("finishToGarageHrs", finishToGarageHrs);
+                                                        String[] timeArray = date3.split(":");
+                                                        String hh = timeArray[0];
+                                                        String mm = timeArray[1];
+                                                        final String p = hh + "." + mm;
+                                                        pause = p + "" + diff_times;
+                                                        // System.out.println("pause" + pause);
+                                                        b.putString("pause", pause);
+                                                        res = 0;
+                                                        // Intent j=new Intent(getActivity(),ResultActivity.class);
+                                                        Intent j = new Intent(getActivity(), ResultActivity.class);
+                                                        j.putExtras(b);
+                                                        j.putExtra("mylist", myList);
+                                                        j.putExtra("position", position);
+                                                        //j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        startActivity(j);
+                                                        getActivity().finish();
+
+                                                    }
 
                                                     ///////////////////
 
@@ -990,15 +1029,18 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
     public void establishConnection(){
 
         entered=true;
-        getGPSLocationUpdates();
+
 
         LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            getGPSLocationUpdates();
 
         }
         else {
 
-            Toast.makeText(getActivity(),"GPS is not enabled... Please check!",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(),"GPS is not enabled... Please Turn ON!",Toast.LENGTH_LONG).show();
+            Intent i=new Intent(getActivity(),HomeActivity.class);
+            startActivity(i);
             getActivity().finish();
         }
     }
@@ -1673,6 +1715,236 @@ public class RideOngoingFragment extends Fragment implements OnMapReadyCallback 
         };
 
         g.post(gR);
+    }
+
+    public void getDistanceAndTime(final String latitude,final String longitude)
+    {
+        String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=" + latitude + "," + longitude + "&destination=" + pickupLat + "," + pickupLong + "&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E";
+
+
+        System.out.println("!1 "+urlString);
+
+        Call<DistancePojo> call = REST_CLIENT.getDistanceDetails(urlString);
+        call.enqueue(new Callback<DistancePojo>() {
+            @Override
+            public void onResponse(Call<DistancePojo> call, Response<DistancePojo> response) {
+
+                DistancePojo data;
+                Route rData;
+                Leg lData;
+
+                if (response.isSuccessful()) {
+                    data = response.body();
+
+                    // System.out.println(response.message() + "::" + response.code() + "::" + response.errorBody());
+
+                    // System.out.println("status is " + data.getStatus());
+                    List<Route> rDataList = data.getRoutes();
+                    // System.out.println("Route size "+rDataList.size());
+
+                    if (rDataList != null) {
+
+                        for (int i = 0; i < rDataList.size(); i++) {
+                            rData = rDataList.get(i);
+
+                            List<Leg> lDataList = rData.getLegs();
+
+                            for (int j = 0; j < lDataList.size(); j++) {
+                                lData = lDataList.get(j);
+
+                                Distance d = lData.getDistance();
+
+                                startToReportKms = startToReportKms + d.getValue();
+
+                                Duration t=lData.getDuration();
+
+                                startToReportHrs=startToReportHrs+t.getValue();
+
+                                // System.out.println("dist and value is " + d.getValue() + ":::" + distance);
+                            }
+
+                        }
+
+                        startToReportKms = startToReportKms / 1000;
+
+
+                        int Hours = (int) (startToReportHrs/(3600));
+                        int Mins = (int) (startToReportHrs % 3600) / 60;
+                        int Secs = (int) (startToReportHrs) % 60;
+
+                        System.out.println("*********"+startToReportHrs+"@"+Hours+"@"+Mins+"@"+Secs);
+
+                        /*DecimalFormat formatter = new DecimalFormat("00");
+                        String hFormatted = formatter.format(Hours);
+                        String mFormatted = formatter.format(Mins);
+                        String sFormatted = formatter.format(Secs);*/
+
+                        startToReportHrs=Float.parseFloat(twoDigitString(Hours) + "." + twoDigitString(Mins));
+
+                        System.out.println("*********"+startToReportHrs);
+
+
+                        //////////////////////
+
+                        String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=" + dropLat + "," + dropLong + "&destination=" + latitude + "," + longitude + "&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E";
+
+
+                        System.out.println("!2 "+urlString);
+
+                        Call<DistancePojo> call1 = REST_CLIENT.getDistanceDetails(urlString);
+                        call1.enqueue(new Callback<DistancePojo>() {
+                            @Override
+                            public void onResponse(Call<DistancePojo> call, Response<DistancePojo> response) {
+
+                                DistancePojo data;
+                                Route rData;
+                                Leg lData;
+
+                                if (response.isSuccessful()) {
+                                    data = response.body();
+
+                                    // System.out.println(response.message() + "::" + response.code() + "::" + response.errorBody());
+
+                                    // System.out.println("status is " + data.getStatus());
+                                    List<Route> rDataList = data.getRoutes();
+                                    // System.out.println("Route size "+rDataList.size());
+
+                                    if (rDataList != null) {
+
+                                        for (int i = 0; i < rDataList.size(); i++) {
+                                            rData = rDataList.get(i);
+
+                                            List<Leg> lDataList = rData.getLegs();
+
+                                            for (int j = 0; j < lDataList.size(); j++) {
+                                                lData = lDataList.get(j);
+
+                                                Distance d = lData.getDistance();
+
+                                                finishToGarageKms = finishToGarageKms + d.getValue();
+
+                                                Duration t=lData.getDuration();
+
+                                                finishToGarageHrs=finishToGarageHrs+t.getValue();
+
+                                                // System.out.println("dist and value is " + d.getValue() + ":::" + distance);
+                                            }
+
+                                        }
+
+                                        finishToGarageKms = finishToGarageKms / 1000;
+
+                                        int Hours = (int) (finishToGarageHrs/3600);
+                                        int Mins = (int) (finishToGarageHrs % 3600) / 60;
+                                        long Secs = (int) (finishToGarageHrs) % 60;
+
+
+                                        finishToGarageHrs=Float.parseFloat(twoDigitString(Hours) + "." + twoDigitString(Mins));
+
+
+                                        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                                        System.out.println(startToReportKms+":"+startToReportHrs+":"+finishToGarageKms+":"+finishToGarageHrs);
+                                        //////////////////////
+
+                                        progressDialog.dismiss();
+
+
+                                        Bundle b = new Bundle();
+                                        b.putFloat("Result", finalDistance);
+                                        b.putString("starting_time", startingTime);
+                                        b.putString("ending_time", endingTime);
+                                        b.putString("idle_time", date3);
+                                        b.putInt("position", position);
+                                        b.putString("jDetails", jsondata);
+                                        b.putString("stBeforePickUp", stBeforePickUp);
+                                        b.putString("stAfterPickUp", stAfterPickUp);
+                                        b.putString("stAfterDrop", stAfterDrop);
+                                        b.putString("sign", signature);
+                                        b.putFloat("startToReportKms",startToReportKms);
+                                        b.putFloat("startToReportHrs",startToReportHrs);
+                                        b.putFloat("finishToGarageKms",finishToGarageKms);
+                                        b.putFloat("finishToGarageHrs",finishToGarageHrs);
+
+                                        String[] timeArray = date3.split(":");
+                                        String hh = timeArray[0];
+                                        String mm = timeArray[1];
+                                        final String p = hh + "." + mm;
+                                        pause = p + "" + diff_times;
+                                        // System.out.println("pause" + pause);
+                                        b.putString("pause", pause);
+                                        res = 0;
+                                        // Intent j=new Intent(getActivity(),ResultActivity.class);
+                                        Intent j = new Intent(getActivity(), ResultActivity.class);
+                                        j.putExtras(b);
+                                        j.putExtra("mylist", myList);
+                                        j.putExtra("position", position);
+
+                                        //j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(j);
+                                        getActivity().finish();
+
+                                        ///////////////////
+                                    } else {
+
+                                        //  Toast.makeText(MapsActivity.this,data.getStatus(),Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    // System.out.println(response.message() + "::" + response.code() + "::" + response.isSuccessful());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<DistancePojo> call, Throwable t) {
+
+                                progressDialog.dismiss();
+
+                                // Toast.makeText(MapsActivity.this,"Connectivity Error..Please Try Again!",Toast.LENGTH_LONG).show();
+                                btStoreData.setVisibility(View.VISIBLE);
+                                //  btFinish.setVisibility(View.GONE);
+                                // dbAdapter.insertDutyEntry(stDSNo,pickupLat,pickupLong,dropLat,dropLong,stDriverId,stStartDate,stWaypoints,jsondata,stBeforePickUp,stAfterPickUp,stAfterDrop,tot_time,pause,date3,stGuestName,stGuestMobile,startingTime,endingTime);
+                                Toast.makeText(getActivity(), "Please check Internet connection!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+
+                        ///////////////////
+                    } else {
+
+                        //  Toast.makeText(MapsActivity.this,data.getStatus(),Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // System.out.println(response.message() + "::" + response.code() + "::" + response.isSuccessful());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DistancePojo> call, Throwable t) {
+
+                progressDialog.dismiss();
+
+                // Toast.makeText(MapsActivity.this,"Connectivity Error..Please Try Again!",Toast.LENGTH_LONG).show();
+                btStoreData.setVisibility(View.VISIBLE);
+                //  btFinish.setVisibility(View.GONE);
+                // dbAdapter.insertDutyEntry(stDSNo,pickupLat,pickupLong,dropLat,dropLong,stDriverId,stStartDate,stWaypoints,jsondata,stBeforePickUp,stAfterPickUp,stAfterDrop,tot_time,pause,date3,stGuestName,stGuestMobile,startingTime,endingTime);
+                Toast.makeText(getActivity(), "Please check Internet connection!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    private String twoDigitString(int number) {
+
+        if (number == 0) {
+            return "00";
+        }
+
+        if (number / 10 == 0) {
+            return "0" + number;
+        }
+
+        return String.valueOf(number);
     }
 
 

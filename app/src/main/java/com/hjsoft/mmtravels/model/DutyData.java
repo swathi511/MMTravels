@@ -36,10 +36,12 @@ public class DutyData implements Serializable {
     String file4;
     String status;
     boolean offlineBookingStatus;
+    String garageStatus,latitude,longitude;
 
 
     public DutyData(String dslipid,String uddsno,String bookingtype,String startdate,Float starttime,String bookedvehicleid,String bookedvehicletype,String traveltype,
-                    String pointpointid,String pickuplocation,String slabname,String guestname,String guestmobile,String driverid,String acceptancestatus,String status,boolean offlineBookingStatus)
+                    String pointpointid,String pickuplocation,String slabname,String guestname,String guestmobile,String driverid,String acceptancestatus,String status,boolean offlineBookingStatus,
+                    String garageStatus,String latitude,String longitude)
     {
         this.dslipid=dslipid;
         this.uddsno=uddsno;
@@ -58,6 +60,9 @@ public class DutyData implements Serializable {
         this.acceptancestatus=acceptancestatus;
         this.status=status;
         this.offlineBookingStatus=offlineBookingStatus;
+        this.garageStatus=garageStatus;
+        this.latitude=latitude;
+        this.longitude=longitude;
     }
 
     public String getDslipid() {
@@ -282,6 +287,30 @@ public class DutyData implements Serializable {
 
     public void setOfflineBookingStatus(boolean offlineBookingStatus) {
         this.offlineBookingStatus = offlineBookingStatus;
+    }
+
+    public String getGarageStatus() {
+        return garageStatus;
+    }
+
+    public void setGarageStatus(String garageStatus) {
+        this.garageStatus = garageStatus;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }
 

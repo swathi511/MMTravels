@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     String uname,pwd;
     String version="1";
     TextView tvTitle;
+    ImageView ivMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +65,10 @@ public class LoginActivity extends AppCompatActivity {
         btLogin=(Button)findViewById(R.id.al_bt_login);
         cLayout=(CoordinatorLayout)findViewById(R.id.al_clayout);
         tvTitle=(TextView)findViewById(R.id.al_tv_title);
+        ivMap=(ImageView)findViewById(R.id.al_iv);
 
+
+      //  Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?path=17.73730317,83.23285889|17.73988994,83.26628954|17.7388205,83.3038019|17.74742162,83.33089053|17.77844261,83.35256573|17.80755298,83.35546484&size=640x400&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E").into(ivMap);
        // String text="<font color=#616161>Pushpak</font><font color=#b71c1c> Cabs</font>";
        // tvTitle.setText(Html.fromHtml(text));
 

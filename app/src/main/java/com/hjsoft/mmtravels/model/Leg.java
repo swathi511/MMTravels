@@ -13,6 +13,9 @@ public class Leg {
     @SerializedName("distance")
     @Expose
     private Distance distance;
+    @SerializedName("duration")
+    @Expose
+    private Duration duration;
 
     @SerializedName("end_address")
     @Expose
@@ -36,6 +39,14 @@ public class Leg {
 
     public void setDistance(Distance distance) {
         this.distance = distance;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
 
