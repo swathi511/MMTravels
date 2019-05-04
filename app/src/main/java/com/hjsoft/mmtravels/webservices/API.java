@@ -5,6 +5,7 @@ import com.hjsoft.mmtravels.model.DistancePojo;
 import com.hjsoft.mmtravels.model.HomePojo;
 import com.hjsoft.mmtravels.model.OTPPojo;
 import com.hjsoft.mmtravels.model.Pojo;
+import com.hjsoft.mmtravels.model.SnapDistance;
 import com.hjsoft.mmtravels.model.UpdatePojo;
 
 import java.util.List;
@@ -50,4 +51,19 @@ public interface API {
 
     @GET
     Call<DistancePojo> getDistanceDetails(@Url String urlString);
+
+    @POST("DriverLogout/logout")
+    Call<Pojo> logoutUser(@Body JsonObject v);
+
+    @POST("DriverAppStatus/change")
+    Call<Pojo> changeStatus(@Body JsonObject v);
+
+    @POST("Coordinates/updatecoordinates")
+    Call<Pojo> updateCoordinates(@Body JsonObject v);
+
+    @GET
+    Call<SnapDistance> getSnapToRoadDetails(@Url String urlString);
+
+    @POST("AddDslipDetails/AddTripDetails")
+    Call<Pojo> sendDistanceForInterval(@Body JsonObject v);
 }

@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
+import com.hjsoft.mmtravels.KalmanLatLong;
 import com.hjsoft.mmtravels.R;
 import com.hjsoft.mmtravels.activity.HomeActivity;
 import com.hjsoft.mmtravels.activity.ResultActivity;
@@ -159,6 +160,8 @@ public class TrackRideFragment extends Fragment implements OnMapReadyCallback,
     ProgressDialog progressDialog;
     int position;
     LinearLayout llOTPValidate;
+    public static final int ACCURACY_DECAYS_TIME = 10;
+    private KalmanLatLong kalmanLatLong;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,6 +174,8 @@ public class TrackRideFragment extends Fragment implements OnMapReadyCallback,
         editor = pref.edit();
 
         mRequestingLocationUpdates=false;
+
+        kalmanLatLong = new KalmanLatLong(ACCURACY_DECAYS_TIME);
 
 
     }
@@ -1131,14 +1136,24 @@ public class TrackRideFragment extends Fragment implements OnMapReadyCallback,
 
             if (location != null && location.hasAccuracy()) {
 
-                if (location.getAccuracy() <= inAccurate) {
+                //if (location.getAccuracy() <= inAccurate) {
 
                     if (location.getLatitude() != 0 && location.getLongitude() != 0) {
 
-                    current_lat = location.getLatitude();
-                    current_long = location.getLongitude();
+//                    current_lat = location.getLatitude();
+//                    current_long = location.getLongitude();
 
-                    // System.out.println("Current location lat long are " + current_lat + ":::" + current_long);
+                    kalmanLatLong.Process(
+                            location.getLatitude(),
+                            location.getLongitude(),
+                            location.getAccuracy(),
+                            location.getTime());
+
+                    if(kalmanLatLong.get_accuracy()<=10) {
+
+                        current_lat = kalmanLatLong.get_lat();
+                        current_long = kalmanLatLong.get_lng();
+                   // }
 
 
                         curntloc = new LatLng(current_lat, current_long);

@@ -9,15 +9,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.hjsoft.mmtravels.R;
 import com.hjsoft.mmtravels.SessionManager;
 import com.hjsoft.mmtravels.adapters.DrawerItemCustomAdapter;
 import com.hjsoft.mmtravels.fragments.RideFragment;
+import com.hjsoft.mmtravels.fragments.RideNewFragment;
+import com.hjsoft.mmtravels.fragments.TestRideFragment;
 import com.hjsoft.mmtravels.fragments.TrackRideFragment;
 import com.hjsoft.mmtravels.model.NavigationData;
+import com.hjsoft.mmtravels.model.Pojo;
+import com.hjsoft.mmtravels.webservices.API;
+import com.hjsoft.mmtravels.webservices.RestClient;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by hjsoft on 28/2/17.
@@ -31,12 +45,22 @@ public class TrackRideActivity  extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    DrawerItemCustomAdapter adapter;
+    DrawerItemCustomAdapter adapter; API REST_CLIENT;
+    SessionManager session;
+    HashMap<String, String> user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        REST_CLIENT= RestClient.get();
+
+        session=new SessionManager(getApplicationContext());
+        user = session.getUserDetails();
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -63,7 +87,9 @@ public class TrackRideActivity  extends AppCompatActivity {
 
         setupDrawerToggle();
 
-        Fragment fragment=new RideFragment();
+        //Fragment fragment=new RideFragment();
+        //Fragment fragment=new RideNewFragment();
+        Fragment fragment=new TestRideFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.content_frame, fragment,"duty_progress").commit();
         setTitle("Duty In Progress");
@@ -95,13 +121,15 @@ public class TrackRideActivity  extends AppCompatActivity {
             case 1:
                 // System.out.println("doing nothing.....");
 
-                SessionManager s=new SessionManager(getApplicationContext());
-                s.logoutUser();
-                Intent l=new Intent(this,LoginActivity.class);
-                l.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                l.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(l);
-                finish();
+//                SessionManager s=new SessionManager(getApplicationContext());
+//                s.logoutUser();
+//                Intent l=new Intent(this,LoginActivity.class);
+//                l.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                l.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(l);
+//                finish();
+
+                logoutUser();
 
                 break;
            /* case 2:
@@ -194,6 +222,40 @@ public class TrackRideActivity  extends AppCompatActivity {
     public void onBackPressed() {
 
         //super.onBackPressed();
+    }
+
+    //Logout user
+    public void logoutUser()
+    {
+        JsonObject v=new JsonObject();
+        v.addProperty("profileid",user.get(SessionManager.KEY_ID));
+        Call<Pojo> call=REST_CLIENT.logoutUser(v);
+
+        call.enqueue(new Callback<Pojo>() {
+            @Override
+            public void onResponse(Call<Pojo> call, Response<Pojo> response) {
+
+                if(response.isSuccessful())
+                {
+                    SessionManager s=new SessionManager(getApplicationContext());
+                    s.logoutUser();
+                    Toast.makeText(TrackRideActivity.this,"Successfully Logged out!",Toast.LENGTH_SHORT).show();
+
+                    Intent l=new Intent(TrackRideActivity.this,LoginActivity.class);
+                    l.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    l.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(l);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Pojo> call, Throwable t) {
+
+                Toast.makeText(TrackRideActivity.this,"No Internet Connection!\nPlease try again.",Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 }
 

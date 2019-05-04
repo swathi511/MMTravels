@@ -83,7 +83,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
         else {
             holder.tvGmobile.setText(data.getGuestmobile());
-            holder.tvGmobile.setText("9198xxxxxxxx");
+            //holder.tvGmobile.setText("9198xxxxxxxx");
         }
 
 
@@ -124,6 +124,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if(data.getAcceptancestatus()!=null) {
 
             if (data.getAcceptancestatus().equals("Y")) {
+
+                holder.tvAccept.setVisibility(View.GONE);
+                holder.tvStart.setVisibility(View.VISIBLE);
+
                 if (data.getStatus().equals("P")) {
                     holder.tvStatus.setVisibility(View.VISIBLE);
                     holder.tvStatus.setText("Ongoing");
@@ -165,13 +169,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                                 holder.tvAccept.setVisibility(View.GONE);
                                 holder.tvStart.setVisibility(View.VISIBLE);
                             }
+                            else {
+
+                                Toast.makeText(context,"Unknown error...Please try again!",Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UpdatePojo> call, Throwable t) {
 
-                        Toast.makeText(context,"Connectivity Error",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"Please check Internet connection!",Toast.LENGTH_SHORT).show();
 
                     }
                 });

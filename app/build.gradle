@@ -1,18 +1,37 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.hjsoft.mmtravels"
         minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 6
-        versionName "1.0.5"
+        targetSdkVersion 26
+        versionCode 23
+        versionName "1.2.2"
     }
+
+    lintOptions {
+        checkReleaseBuilds false // Add this
+        abortOnError false
+    }
+
     buildTypes {
+
+        //dileep sys
+
+        debug {
+            //buildConfigField "String", "BASE_URL", '"http://192.168.1.21:92/api/"'
+            buildConfigField "String", "BASE_URL", '"http://192.168.1.23:4141/api/"'
+            buildConfigField "String", "VERSION", '"1"'
+        }
+
         release {
+
+            buildConfigField "String", "BASE_URL", '"http://183.82.147.129:1353/api/"'
+            buildConfigField "String", "VERSION", '"1.9"'
+
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -21,16 +40,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.google.android.gms:play-services-location:9.4.0'
-    compile 'com.google.android.gms:play-services-maps:9.4.0'
-    compile 'com.google.android.gms:play-services-places:9.4.0'
-    compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.android.support:design:24.1.1'
-    compile 'com.kyanogen.signatureview:signature-view:1.0'
-    compile 'id.zelory:compressor:1.0.3'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.google.android.gms:play-services-location:11.0.1'
+    implementation 'com.google.android.gms:play-services-maps:11.0.1'
+    implementation 'com.google.android.gms:play-services-places:11.0.1'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.android.support:design:26.+'
+    implementation 'com.kyanogen.signatureview:signature-view:1.2'
+    implementation 'id.zelory:compressor:1.0.3'
 }

@@ -5,16 +5,20 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
 
 /**
  * Created by hjsoft on 8/11/17.
@@ -36,6 +40,13 @@ public class GPSTracker extends Service implements LocationListener {
     Location location; // location
     double latitude,lastKnownLat; // latitude
     double longitude,lastKnownLong; // longitude
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    int PRIVATE_MODE = 0;
+    private static final String PREF_NAME = "SharedPref";
+
+    Handler h1;
+    Runnable r1;
 
     // The minimum distance to change Updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
@@ -44,7 +55,8 @@ public class GPSTracker extends Service implements LocationListener {
 
     // The minimum time between updates in milliseconds
     //private static final long MIN_TIME_BW_UPDATES = 1000 * 10 ; // 10 sec
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 2 ; // 10 sec
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 1 ; // 1 sec
+    // 1000 * 2
 
     static Double lat1 = null;
     static Double lon1 = null;
@@ -54,13 +66,23 @@ public class GPSTracker extends Service implements LocationListener {
     static int status = 0;
 
     boolean first=true;
+    boolean flag;
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
+    float accuracy=10;
+    long getTime;
+
+
+
 
     public GPSTracker(Context context) {
         this.mContext = context;
+        pref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        flag=pref.getBoolean("flag",true);
         getLocation();
+        //System.out.println("Constructor is called");
     }
 
     public Location getLocation() {
@@ -109,6 +131,7 @@ public class GPSTracker extends Service implements LocationListener {
                 System.out.println("Checking if GPS is enabled!"+isGPSEnabled);
                 if (isGPSEnabled) {
                     //if (location == null) {
+
                     locationManager.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER,
                             MIN_TIME_BW_UPDATES,
@@ -119,8 +142,20 @@ public class GPSTracker extends Service implements LocationListener {
                                 .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         if (location != null) {
                             Log.d("GPS Enabled", "GPS Enabled"+location.getLatitude()+":"+location.getLongitude());
-                            lastKnownLat = location.getLatitude();
-                            lastKnownLong = location.getLongitude();
+//                            lastKnownLat = location.getLatitude();
+//                            lastKnownLong = location.getLongitude();
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            if(location.hasAccuracy()) {
+                                accuracy = location.getAccuracy();
+                            }
+                            else {
+                                accuracy=10;
+                            }
+                            getTime=location.getTime();
+
+                            System.out.println("Details in GPSTracker class for GPS Provider");
+                            System.out.println(latitude+"::"+longitude+"::"+accuracy+"::"+getTime);
                         }
                     }
                     // }
@@ -138,8 +173,21 @@ public class GPSTracker extends Service implements LocationListener {
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
                             Log.d("Network", "Network"+location.getLatitude()+":"+location.getLongitude());
-                            lastKnownLat = location.getLatitude();
-                            lastKnownLong = location.getLongitude();
+                            /*lastKnownLat = location.getLatitude();
+                            lastKnownLong = location.getLongitude()*/;
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            if(location.hasAccuracy()) {
+                                accuracy = location.getAccuracy();
+                            }
+                            else {
+                                accuracy=10;
+                            }
+                            getTime=location.getTime();
+
+                            System.out.println("Details in GPSTracker class for Network Provider");
+                            System.out.println(latitude+"::"+longitude+"::"+accuracy+"::"+getTime);
+
                         }
                     }
                 }
@@ -149,6 +197,8 @@ public class GPSTracker extends Service implements LocationListener {
             e.printStackTrace();
         }
 
+
+
         return location;
     }
 
@@ -157,6 +207,7 @@ public class GPSTracker extends Service implements LocationListener {
      * Calling this function will stop using GPS in your app
      * */
     public void stopUsingGPS(){
+        //System.out.println("GPS COORDINATES STOPPED");
         try {
             if (locationManager != null) {
                 locationManager.removeUpdates(GPSTracker.this);
@@ -166,14 +217,17 @@ public class GPSTracker extends Service implements LocationListener {
         {
             e.printStackTrace();
         }
+
+        //h1.removeCallbacks(r1);
     }
 
     public double getLastKnownLatitude(){
-        /*if(location != null){
+      /*  if(location != null){
             latitude = location.getLatitude();
         }*/
+        //System.out.println("Knownlottitudeis"+lastKnownLat);
+        // return latitude;
 
-        // return latitude
         return lastKnownLat;
     }
 
@@ -181,11 +235,11 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to get longitude
      * */
     public double getLastKnownLongitude(){
-        /*if(location != null){
+       /* if(location != null){
             longitude = location.getLongitude();
         }*/
-
-        // return longitude
+        //  System.out.println("Knownlongitutudeis"+lastKnownLong);
+        // return longitude;
         return lastKnownLong;
     }
 
@@ -194,10 +248,10 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to get latitude
      * */
     public double getLatitude(){
-        /*if(location != null){
-            latitude = location.getLatitude();
-        }*/
-
+//        if(location != null){
+//            latitude = location.getLatitude();
+//        }
+        //System.out.println("GPSSSSSSSS Knownlottitude is"+latitude);
         // return latitude
         return latitude;
     }
@@ -206,12 +260,30 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to get longitude
      * */
     public double getLongitude(){
-        /*if(location != null){
-            longitude = location.getLongitude();
-        }*/
-
+//        if(location != null){
+//            longitude = location.getLongitude();
+//        }
+        //System.out.println("GPSSSSSSSSKnownlongitudetude is"+longitude);
         // return longitude
         return longitude;
+    }
+
+    public float getAccuracy(){
+//        if(location != null){
+//            longitude = location.getLongitude();
+//        }
+        //System.out.println("GPSSSSSSSSKnownlongitudetude is"+longitude);
+        // return longitude
+        return accuracy;
+    }
+
+    public long getTime(){
+//        if(location != null){
+//            longitude = location.getLongitude();
+//        }
+        //System.out.println("GPSSSSSSSSKnownlongitudetude is"+longitude);
+        // return longitude
+        return getTime;
     }
 
     /**
@@ -257,8 +329,9 @@ public class GPSTracker extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        System.out.println("location changed ...."+location.getLatitude()+":"+location.getLongitude()+"****"+location.getProvider());
-        System.out.println("accuracy issssss "+location.getAccuracy());
+        //System.out.println("location changed ...."+location.getLatitude()+":"+location.getLongitude()+"****"+location.getProvider());
+        //System.out.println("accuracy issssss "+location.getAccuracy());
+
 
         if(location!=null&&location.hasAccuracy()) {
 
@@ -266,17 +339,21 @@ public class GPSTracker extends Service implements LocationListener {
 
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
+                accuracy=location.getAccuracy();
+                getTime=location.getTime();
                 first=false;
 
-                System.out.println("first "+location.getAccuracy()+":"+"lt&lng"+latitude+":"+longitude);
+                //System.out.println("first "+location.getAccuracy()+":"+"lt&lng"+latitude+":"+longitude);
             }
             else {
 
-                if (location.getAccuracy() <= 10) {
+                //if (location.getAccuracy() <= 10) {
 
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                }
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                accuracy=location.getAccuracy();
+                getTime=location.getTime();
+                // }
             }
         }
 
@@ -330,4 +407,22 @@ public class GPSTracker extends Service implements LocationListener {
         return (int) (dist * meterConversion);
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        System.out.println("Service OnCreate is called");
+
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        System.out.println("Service OnDestory is called");
+
+
+        //h1.removeCallbacks(r1);
+    }
 }

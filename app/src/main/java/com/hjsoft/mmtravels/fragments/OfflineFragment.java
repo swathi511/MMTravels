@@ -497,6 +497,7 @@ public class OfflineFragment extends Fragment {
             for (int i = 0; i < filePaths.size(); i++) {
 
                 File file = new File(filePaths.get(i));
+
                 File compressedImageFile= Compressor.getDefault(getActivity()).compressToFile(file);
                 //requestBody=RequestBody.create(MEDIA_TYPE_IMG,file);
                 requestBody=RequestBody.create(MEDIA_TYPE_IMG,compressedImageFile);

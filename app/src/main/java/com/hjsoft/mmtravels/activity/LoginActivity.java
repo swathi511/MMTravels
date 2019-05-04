@@ -1,8 +1,14 @@
 package com.hjsoft.mmtravels.activity;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.hjsoft.mmtravels.BuildConfig;
 import com.hjsoft.mmtravels.R;
 import com.hjsoft.mmtravels.SessionManager;
 import com.hjsoft.mmtravels.model.Pojo;
@@ -28,6 +35,7 @@ import com.hjsoft.mmtravels.webservices.API;
 import com.hjsoft.mmtravels.webservices.RestClient;
 
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,9 +56,13 @@ public class LoginActivity extends AppCompatActivity {
     TextView tvFpwd;
     HashMap<String, String> user;
     String uname,pwd;
-    String version="1";
+    String version= BuildConfig.VERSION;
     TextView tvTitle;
     ImageView ivMap;
+    SharedPreferences pref;
+    int PRIVATE_MODE = 0;
+    private static final String PREF_NAME = "SharedPref";
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         session=new SessionManager(getApplicationContext());
+        pref = getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
 
         etUname=(EditText)findViewById(R.id.al_et_uname);
         etPwd=(EditText)findViewById(R.id.al_et_pwd);
@@ -68,9 +82,9 @@ public class LoginActivity extends AppCompatActivity {
         ivMap=(ImageView)findViewById(R.id.al_iv);
 
 
-      //  Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?path=17.73730317,83.23285889|17.73988994,83.26628954|17.7388205,83.3038019|17.74742162,83.33089053|17.77844261,83.35256573|17.80755298,83.35546484&size=640x400&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E").into(ivMap);
-       // String text="<font color=#616161>Pushpak</font><font color=#b71c1c> Cabs</font>";
-       // tvTitle.setText(Html.fromHtml(text));
+        //  Picasso.with(this).load("https://maps.googleapis.com/maps/api/staticmap?path=17.73730317,83.23285889|17.73988994,83.26628954|17.7388205,83.3038019|17.74742162,83.33089053|17.77844261,83.35256573|17.80755298,83.35546484&size=640x400&key=AIzaSyCIx6j-T1Yd5UuQUgnuRY04ZdoDF4xCW0E").into(ivMap);
+        // String text="<font color=#616161>Pushpak</font><font color=#b71c1c> Cabs</font>";
+        // tvTitle.setText(Html.fromHtml(text));
 
         tvFpwd=(TextView)findViewById(R.id.al_tv_pwd);
 
@@ -113,9 +127,17 @@ public class LoginActivity extends AppCompatActivity {
                     if(response.isSuccessful())
                     {
                         loginStatus = response.body();
+
+                        Log.i("LA","lenght"+loginStatus.getMessage().split("#").length);
+                        Log.i("LA","l[0]"+loginStatus.getMessage().split("#")[0]);
+                        Log.i("LA","l[1]"+loginStatus.getMessage().split("#")[1]);
+
+
+                        editor.putString("status",loginStatus.getMessage().split("#")[1]);
+                        editor.commit();
                         progressDialog.dismiss();
                         //session.createLoginSession(stUname,stPwd);
-                        Intent i=new Intent(LoginActivity.this,HomeActivity.class);
+                        Intent i=new Intent(    LoginActivity.this,HomeActivity.class);
                         startActivity(i);
                         finish();
                     }
@@ -145,6 +167,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                     alertDialog.dismiss();
                                     finish();
+
+                                    openAppRating(getApplicationContext());
                                 }
                             });
                         }
@@ -213,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                     v.addProperty("pwd",stPwd);
                     v.addProperty("version",version);
 
-                   System.out.println("details are"+stUname+stPwd+stCode);
+                    System.out.println("details are"+stUname+stPwd+stCode);
 
                     Call<Pojo>login=REST_CLIENT.validate(v);
                     login.enqueue(new Callback<Pojo>() {
@@ -231,20 +255,34 @@ public class LoginActivity extends AppCompatActivity {
                             {
 
                                 String msg = loginStatus.getMessage();
+
+                                String stProfileid=msg.split("#")[0];
+
+                                System.out.println("@@@@@@@@@ProfileId is"+stProfileid);
                                 // System.out.println("msg in onREsponse in LoginActivity");
-                                if (msg.equals("Exist"))
-                                {
-                                    progressDialog.dismiss();
-                                    session.createLoginSession(stUname,stPwd);
+                                //if (msg.equals("Exist"))
+                                //{
+                                Log.i("LA","login msg is"+msg);
+                                String m[]=msg.split("#");
+                                progressDialog.dismiss();
 
-                                    user = session.getUserDetails();
-                                    uname=user.get(SessionManager.KEY_NAME);
-                                    pwd=user.get(SessionManager.KEY_PWD);
+                                Log.i("LA","m[]length"+m.length+"m[0]"+m[0]);
 
-                                    Intent i=new Intent(LoginActivity.this,HomeActivity.class);
-                                    startActivity(i);
-                                    finish();
-                                }
+                                Log.i("LA","0 & 1"+m[0]+":"+m[1]);
+                                session.createLoginSession(stUname,stPwd,m[0]);
+
+                                editor.putString("status",m[1]);
+                                editor.putString("profileId",stProfileid);
+                                editor.commit();
+
+                                user = session.getUserDetails();
+                                uname=user.get(SessionManager.KEY_NAME);
+                                pwd=user.get(SessionManager.KEY_PWD);
+
+                                Intent i=new Intent(LoginActivity.this,HomeActivity.class);
+                                startActivity(i);
+                                finish();
+                                // }
                             }
                             else
                             {
@@ -271,12 +309,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                             alertDialog.dismiss();
                                             finish();
+
+                                            openAppRating(getApplicationContext());
                                         }
                                     });
                                 }
                                 else {
                                     progressDialog.dismiss();
-                                    Snackbar snackbar = Snackbar.make(cLayout, "Invalid details entered", Snackbar.LENGTH_LONG);
+                                    Snackbar snackbar = Snackbar.make(cLayout, "User details not found!", Snackbar.LENGTH_LONG);
                                     View sbView = snackbar.getView();
                                     TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                                     textView.setTextColor(Color.parseColor("#ffffff"));
@@ -304,6 +344,44 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static void openAppRating(Context context) {
+        // you can also use BuildConfig.APPLICATION_ID
+        String appId = context.getPackageName();
+        Intent rateIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=" + appId));
+        boolean marketFound = false;
+
+        // find all applications able to handle our rateIntent
+        final List<ResolveInfo> otherApps = context.getPackageManager()
+                .queryIntentActivities(rateIntent, 0);
+        for (ResolveInfo otherApp : otherApps) {
+            // look for Google Play application
+            if (otherApp.activityInfo.applicationInfo.packageName
+                    .equals("com.android.vending")) {
+
+                ActivityInfo otherAppActivity = otherApp.activityInfo;
+                ComponentName componentName = new ComponentName(
+                        otherAppActivity.applicationInfo.packageName,
+                        otherAppActivity.name
+                );
+                // make sure it does NOT open in the stack of your activity
+                rateIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // task reparenting if needed
+                rateIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                // if the Google Play was already open in a search result
+                //  this make sure it still go to the app page you requested
+                rateIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                // this make sure only the Google Play app is allowed to
+                // intercept the intent
+                rateIntent.setComponent(componentName);
+                context.startActivity(rateIntent);
+                marketFound = true;
+                break;
+
+            }
+        }
     }
 }
 

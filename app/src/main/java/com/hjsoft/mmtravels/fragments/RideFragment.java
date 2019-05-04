@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -45,8 +47,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonObject;
 import com.hjsoft.mmtravels.GPSTracker;
+import com.hjsoft.mmtravels.KalmanLatLong;
 import com.hjsoft.mmtravels.R;
 import com.hjsoft.mmtravels.activity.HomeActivity;
 import com.hjsoft.mmtravels.activity.ResultActivity;
@@ -58,6 +63,7 @@ import com.hjsoft.mmtravels.model.Duration;
 import com.hjsoft.mmtravels.model.DutyData;
 import com.hjsoft.mmtravels.model.Leg;
 import com.hjsoft.mmtravels.model.OTPPojo;
+import com.hjsoft.mmtravels.model.Pojo;
 import com.hjsoft.mmtravels.model.Route;
 import com.hjsoft.mmtravels.model.UpdatePojo;
 import com.hjsoft.mmtravels.webservices.API;
@@ -82,6 +88,8 @@ import retrofit2.Response;
  * Created by hjsoft on 28/2/17.
  */
 public class RideFragment extends Fragment implements OnMapReadyCallback {
+
+    /// File is being Used....IMP
 
     View rootView;
     private GoogleMap mMap;
@@ -152,10 +160,18 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
     GPSTracker gps;
     float startToReportKms=0,finishToGarageKms=0,startToReportHrs=0,finishToGarageHrs=0;
     String garageStatus,latitude,longitude;
+    public static final int ACCURACY_DECAYS_TIME = 10;
+    private KalmanLatLong kalmanLatLong;
+    float accuracy;
+    long getTime;
+    double tempLat,tempLong;
+    private Polyline runningPathPolyline;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
         //mapFragment.getMapAsync(this);
@@ -167,6 +183,7 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
         mRequestingLocationUpdates=false;
 
+        kalmanLatLong = new KalmanLatLong(ACCURACY_DECAYS_TIME);
 
     }
 
@@ -223,8 +240,8 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
         stRTime=String.valueOf(data.getStarttime());
         tvGname.setText(data.getGuestname());
         stGuestName=data.getGuestname();
-        //tvGmobile.setText(data.getGuestmobile());
-        tvGmobile.setText("9198xxxxxxxx");
+        tvGmobile.setText(data.getGuestmobile());
+        //tvGmobile.setText("9198xxxxxxxx");
         stGuestMobile=data.getGuestmobile();
         gNumber=data.getGuestmobile();
         stStartDate=data.getStartdate();
@@ -416,9 +433,9 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
 
-                dbAdapter.updateStatus(stDSNo,"otp");
-
                 //btValidate code
+
+
 
                 JsonObject j=new JsonObject();
                 j.addProperty("dslipid",data.getDslipid());
@@ -434,6 +451,8 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
                         if(response.isSuccessful())
                         {
+                            dbAdapter.updateStatus(stDSNo,"otp");
+
                             if (btValidate.isShown()) {
                             }
                             else {
@@ -445,7 +464,7 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                             if (otpData.getMessage().equals("3")) {
 
                                 btPickUp.setVisibility(View.GONE);
-                                Toast.makeText(getActivity(),"OTP is being sent!Limit Exceeded",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(),"OTP is being sent!\nCannot request for OTP anymore.",Toast.LENGTH_LONG).show();
                             }
                             else
                             {
@@ -455,6 +474,8 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                         else {
 
                             Toast.makeText(getActivity(), "Limit Exceeded..", Toast.LENGTH_LONG).show();
+                            btPickUp.setClickable(false);
+                            btPickUp.setEnabled(false);
                         }
                     }
 
@@ -496,6 +517,10 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
                         final String adStOtp = adEtOtp.getText().toString().trim();
 
+                        //System.out.println("OTP Validations::::::");
+                        //System.out.println(data.getDslipid()+"::"+data.getDriverid()+"::"+data.getStartdate()+"::"+adStOtp);
+
+
                         JsonObject v=new JsonObject();
                         v.addProperty("dslipid",data.getDslipid());
                         v.addProperty("driverid",data.getDriverid());
@@ -530,6 +555,7 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                                 }
                                 else{
                                     Toast.makeText(getActivity(),"OTP Authentication Failed!",Toast.LENGTH_LONG).show();
+                                    System.out.println("Log"+response.message());
                                 }
                             }
 
@@ -733,6 +759,7 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                                                     alertDialog.dismiss();
 
                                                     System.out.println("garage status isssssss "+garageStatus);
+                                                    System.out.println("final distance isssssss "+finalDistance);
 
                                                     if(garageStatus.equals("Applicable"))
                                                     {
@@ -1207,7 +1234,8 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
                 gps=new GPSTracker(getActivity());
 
             } else {
-                Toast.makeText(getActivity(), "Permission not granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Loaction permission is required for app to run!", Toast.LENGTH_LONG).show();
+                getActivity().finish();
             }
         }
         else {
@@ -1303,6 +1331,44 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 //                                    build();
 //                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(pos));
 
+                    /*if (runningPathPolyline == null) {
+
+                        LatLng from = new LatLng(lastLocDist.latitude,lastLocDist.longitude);
+
+                        LatLng to = new LatLng(current_lat,current_long);
+
+                        runningPathPolyline = mMap.addPolyline(new PolylineOptions()
+                                .add(from, to)
+                                .width(10).color(Color.parseColor("#801B60FE")).geodesic(true));
+
+                    } else {
+                        LatLng to = new LatLng(current_lat,current_long);
+
+                        List<LatLng> points = runningPathPolyline.getPoints();
+                        points.add(to);
+
+                        runningPathPolyline.setPoints(points);
+                    }*/
+
+                }
+                else {
+
+                    if (current_lat != 0.0 && current_long != 0.0 ) {
+
+                        curntloc = new LatLng(current_lat, current_long);
+
+                        if (marker != null) {
+
+                        } else {
+
+                            marker = mMap.addMarker(new MarkerOptions().position(curntloc).icon(BitmapDescriptorFactory.fromResource(R.drawable.cab_icon)));
+                        }
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curntloc, 16));
+                        mMap.getUiSettings().setMapToolbarEnabled(false);
+                    }
+
+
                 }
 
                 lastLocDist = new LatLng(current_lat,current_long);
@@ -1314,36 +1380,50 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void storeCoordinatesForDistance() {
+
         hDist = new Handler();
         rDist = new Runnable() {
             @Override
             public void run() {
 
-                hDist.postDelayed(rDist, 300000);//5 min ~ 300 sec
+                hDist.postDelayed(rDist, 120000);//5 min ~ 300 sec //changed to 2 min ~ 120 sec
 
                 currentTime = getCurrentTime();
 
-                if (lastLocDist != null && current_lat != 0.0 && current_long != 0.0 && lastLocDist.latitude != 0.0 && lastLocDist.longitude != 0.0) {
+                //if (lastLocDist != null && current_lat != 0.0 && current_long != 0.0 && lastLocDist.latitude != 0.0 && lastLocDist.longitude != 0.0) {
+                if (current_lat != 0.0 && current_long != 0.0) {
 
-                    // System.out.println(lastLocDist.latitude + ":" + lastLocDist.longitude);
-                    // System.out.println(current_lat + ":" + current_long);
-
-                    Location.distanceBetween(lastLocDist.latitude, lastLocDist.longitude, current_lat, current_long, dist);
-
-                    // System.out.println(lastLocDist.latitude + ":" + lastLocDist.longitude + ":" + current_lat + ":" + current_long + "::" + dist[0]);
-
+                    //Location.distanceBetween(lastLocDist.latitude, lastLocDist.longitude, current_lat, current_long, dist);
 
                     dbAdapter.insertEntry(stDSNo, current_lat, current_long, complete_address, resDist, timeUpdated);
-                    //lastLocDist=new LatLng(current_lat,current_long);
-                    // System.out.println(current_lat + ":" + current_long + ":" + complete_address + ":" + resDist + ":" + timeUpdated);
 
-                    // startPosition = marker.getPosition();
-                    //  finalPosition = new LatLng(current_lat, current_long);
+                    //System.out.println("ProfileId isss "+pref.getString("profileId",""));
+                    //System.out.println("Coordinates"+current_lat+"::"+current_long);
 
-                    //  double toRotation = bearingBetweenLocations(startPosition, finalPosition);
-                    //  rotateMarker(marker, (float) toRotation);
+                    JsonObject v=new JsonObject();
+                    v.addProperty("profileid",pref.getString("profileId",""));
+                    v.addProperty("longitude",current_long);
+                    v.addProperty("latittude",current_lat);
 
-                    //  accelerateDecelerate();
+                    Call<Pojo> call=REST_CLIENT.updateCoordinates(v);
+                    call.enqueue(new Callback<Pojo>() {
+                        @Override
+                        public void onResponse(Call<Pojo> call, Response<Pojo> response) {
+
+                            if(response.isSuccessful())
+                            {
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Pojo> call, Throwable t) {
+
+                            Toast.makeText(getActivity(),"Please check Internet connection!",Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
                 } else {
 
                     //dbAdapter.insertEntry(0.0, 0.0, complete_address, resDist, timeUpdated);
@@ -1560,39 +1640,74 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
     public void getGPSLocationUpdates()
     {
-
         g=new Handler();
         gR=new Runnable() {
             @Override
             public void run() {
 
-                g.postDelayed(this,2000);
+                g.postDelayed(this, 2000);
 
-                System.out.println("gps calling....");
+                //System.out.println("gps calling....");
 
-                current_lat = gps.getLatitude();
-                current_long = gps.getLongitude();
+                tempLat = gps.getLatitude();
+                tempLong = gps.getLongitude();
+                accuracy=gps.getAccuracy();
+                getTime=gps.getTime();
 
-                if (current_lat != 0.0 && current_long != 0.0) {
+               /* System.out.println("Temp values are...");
+                System.out.println("1.."+tempLat);
+                System.out.println("2.."+tempLong);
+                System.out.println("3.."+accuracy);
+                System.out.println("4.."+getTime);*/
+
+                if (tempLat != 0.0 && tempLong != 0.0) {
 
                     if (first) {
+
+                        current_lat = gps.getLatitude();
+                        current_long = gps.getLongitude();
 
                         pickupLat = String.valueOf(current_lat);
                         pickupLong = String.valueOf(current_long);
 
-                        dbAdapter.insertTimes("pickup_lat",String.valueOf(pickupLat),stDSNo);
-                        dbAdapter.insertTimes("pickup_long",String.valueOf(pickupLong),stDSNo);
+                        dbAdapter.insertTimes("pickup_lat", String.valueOf(pickupLat), stDSNo);
+                        dbAdapter.insertTimes("pickup_long", String.valueOf(pickupLong), stDSNo);
 
                         gettingLocationUpdates();
                         storeCoordinatesForDistance();
 
                         first = false;
+
+                    } else {
+
+                        //System.out.println("Kalman processing....location.Accuracy**"+accuracy);
+
+                        if(accuracy<=10) {
+
+                            kalmanLatLong.Process(
+                                    tempLat,
+                                    tempLong,
+                                    accuracy,
+                                    getTime);
+
+                            //System.out.println("Kalman accuracy.."+kalmanLatLong.get_accuracy());
+
+
+                            if (kalmanLatLong.get_accuracy() <= 10) {
+
+                                current_lat = kalmanLatLong.get_lat();
+                                current_long = kalmanLatLong.get_lng();
+
+
+                            }
+                        }
                     }
                 }
                 else {
 
-                    Toast.makeText(getActivity(),"Getting Location.. Please wait!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Getting Location.. Please wait!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         };
 
@@ -1829,5 +1944,9 @@ public class RideFragment extends Fragment implements OnMapReadyCallback {
 
         return String.valueOf(number);
     }
+
+
+
+
 
 }

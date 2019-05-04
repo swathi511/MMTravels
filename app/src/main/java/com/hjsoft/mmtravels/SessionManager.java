@@ -20,7 +20,7 @@ public class SessionManager {
     private static final String IS_LOGIN = "IsLoggedIn";
     public static final String KEY_NAME = "name";
     public static final String KEY_PWD = "pwd";
-    public static final String KEY_CODE = "code";
+    public static final String KEY_ID = "id";
 
     public SessionManager(Context context){
         this._context = context;
@@ -31,12 +31,12 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String name, String pwd){
+    public void createLoginSession(String name, String pwd,String profileId){
 
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_PWD, pwd);
-      //  editor.putString(KEY_CODE, code);
+        editor.putString(KEY_ID, profileId);
         editor.commit();
     }
 
@@ -54,7 +54,7 @@ public class SessionManager {
         // user name
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_PWD, pref.getString(KEY_PWD, null));
-        //user.put(KEY_CODE, pref.getString(KEY_CODE, null));
+        user.put(KEY_ID, pref.getString(KEY_ID, null));
         return user;
     }
     /**

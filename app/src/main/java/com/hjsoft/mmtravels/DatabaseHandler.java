@@ -25,6 +25,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DBAdapter.TABLE_CREATE_DUTY_UPDATES);
         sqLiteDatabase.execSQL(DBAdapter.TABLE_CREATE_STATUS);
         sqLiteDatabase.execSQL(DBAdapter.TABLE_STORE_TIMES);
+        sqLiteDatabase.execSQL(DBAdapter.TABLE_STORE_LAT_LNG);
+        sqLiteDatabase.execSQL(DBAdapter.TABLE_STORE_URL);
+        sqLiteDatabase.execSQL(DBAdapter.TABLE_STORE_DISTANCE);
     }
 
     @Override
@@ -38,6 +41,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "DUTY_UPDATES");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "STATUS");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "TIMES");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "LATLNG");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "LOC_URL");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + "DISTCE");
         // Create a new one.
         onCreate(sqLiteDatabase);
     }

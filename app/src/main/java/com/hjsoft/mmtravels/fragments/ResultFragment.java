@@ -3,6 +3,7 @@ package com.hjsoft.mmtravels.fragments;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,11 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.hjsoft.mmtravels.GPSTracker;
 import com.hjsoft.mmtravels.R;
 import com.hjsoft.mmtravels.SessionManager;
 import com.hjsoft.mmtravels.activity.HomeActivity;
 import com.hjsoft.mmtravels.adapters.DBAdapter;
 import com.hjsoft.mmtravels.model.DutyData;
+import com.hjsoft.mmtravels.model.Pojo;
 import com.hjsoft.mmtravels.model.UpdatePojo;
 import com.hjsoft.mmtravels.webservices.API;
 import com.hjsoft.mmtravels.webservices.RestClient;
@@ -66,18 +70,39 @@ public class ResultFragment extends Fragment {
     Toolbar tbTitle;
     ArrayList<DutyData> myList;
     DutyData data;
-    String date,tothrs;
+    String date;
     String finalTimeTravelled;
     API REST_CLIENT;
     DBAdapter dbAdapter;
     boolean dataSent=false;
     String signature;
     long diff;
-    String tot_time;
+    String tot_time,totHrs="00.00";
     SessionManager session;
     String stDsno;
     int position;
     float startToReportKms,finishToGarageKms,startToReportHrs,finishToGarageHrs;
+    GPSTracker gps;
+    Handler h1;
+    Runnable r1;
+    double current_lat,current_long;
+    SharedPreferences pref;
+    int PRIVATE_MODE = 0;
+    private static final String PREF_NAME = "SharedPref";
+    SharedPreferences.Editor editor;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        pref = getActivity().getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+
+        REST_CLIENT= RestClient.get();
+        gps=new GPSTracker(getActivity());
+
+        sendLocationUpdates();
+    }
 
     @Nullable
     @Override
@@ -137,9 +162,11 @@ public class ResultFragment extends Fragment {
         finishToGarageKms=b.getFloat("finishToGarageKms");
         finishToGarageHrs=b.getFloat("finishToGarageHrs");
 
-       //
+       //__
         // Toast.makeText(getActivity(),position,Toast.LENGTH_SHORT).show();
         // System.out.println("Position is "+position);
+
+        System.out.println("Result isss "+res);
 
         data=myList.get(position);
 
@@ -149,8 +176,8 @@ public class ResultFragment extends Fragment {
         //tvRdate.setText(data.getStartdate());
         tvRtime.setText(String.valueOf(data.getStarttime()));
         tvGname.setText(data.getGuestname());
-        //tvGmobile.setText(data.getGuestmobile());
-        tvGmobile.setText("9198xxxxxxxx");
+        tvGmobile.setText(data.getGuestmobile());
+        //tvGmobile.setText("9198xxxxxxxx");
 
         String s=data.getStartdate();
         try {
@@ -170,15 +197,15 @@ public class ResultFragment extends Fragment {
             // System.out.println("signature is "+signature);
         }
 
-        // System.out.println("Res"+res);
-        // System.out.println("stime & endtime"+starting_time+" "+ending_time);
-        // System.out.println("idle_time"+idle_time);
-        // System.out.println("jdet"+jDetails);
-        // System.out.println("pause"+pause);
-        // System.out.println("stBef"+stBeforePickUp);
-        // System.out.println("stAft"+stAfterPickUp);
-        // System.out.println("stAfterDrop"+stAfterDrop);
-        // System.out.println("sign"+signature);
+         /*System.out.println("Res"+res);
+         System.out.println("stime & endtime"+starting_time+" "+ending_time);
+         System.out.println("idle_time"+idle_time);
+         System.out.println("jdet"+jDetails);
+         System.out.println("pause"+pause);
+         System.out.println("stBef"+stBeforePickUp);
+         System.out.println("stAft"+stAfterPickUp);
+         System.out.println("stAfterDrop"+stAfterDrop);
+         System.out.println("sign"+signature);*/
 
 
         //SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -200,6 +227,7 @@ public class ResultFragment extends Fragment {
             String mFormatted = formatter.format(Mins);
             String sFormatted = formatter.format(Secs);
             tot_time=hFormatted+":"+mFormatted+":"+sFormatted;
+            totHrs=hFormatted+"."+mFormatted;
 
             // System.out.println("Total time travelled is "+finalTimeTravelled);
 
@@ -237,13 +265,15 @@ public class ResultFragment extends Fragment {
         // tvTmove.setText(date);
         tvTidle.setText(idle_time);
 
-        REST_CLIENT= RestClient.get();
         data=myList.get(position);
 
         final String val=String.valueOf(res);
 
         //System.out.println("signature is &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
         //System.out.println(signature);
+
+        editor.putFloat("distance",0);
+        editor.commit();
 
 
         final JsonObject v=new JsonObject();
@@ -253,8 +283,8 @@ public class ResultFragment extends Fragment {
         v.addProperty("totkms",val);
         v.addProperty("jdetails",stAfterPickUp);
         v.addProperty("sjdetails",stBeforePickUp);
-        v.addProperty("cjdetails",stAfterDrop);
-        v.addProperty("tothrs",tot_time);
+        v.addProperty("cjdetails",stAfterDrop+"URL");
+        v.addProperty("tothrs",totHrs);
         v.addProperty("signature",signature);
         v.addProperty("idletime",pause+"$"+jDetails+"$");
         v.addProperty("status","Y");
@@ -263,21 +293,25 @@ public class ResultFragment extends Fragment {
         v.addProperty("finishToGarageKms",finishToGarageKms);
         v.addProperty("finishToGarageHrs",finishToGarageHrs);
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        /*System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println(data.getDslipid());
         System.out.println(data.getDriverid());
         System.out.println(data.getStartdate());
         System.out.println(val);
-        System.out.println(stAfterPickUp);
-        System.out.println(stBeforePickUp);
-        System.out.println(stAfterDrop);
+        System.out.println("stAFterpickup"+stAfterPickUp);
+        System.out.println("stBefPickup"+stBeforePickUp);
+        System.out.println("stAFterdrop"+stAfterDrop);
         System.out.println(tot_time);
         System.out.println(pause+"$"+jDetails+"$");
+        System.out.println("ALL THE URLS..");
+        //System.out.println(dbAdapter.getLocUrl(stDsno));
         //System.out.println(signature);
 
         System.out.println(startToReportKms+":"+startToReportHrs+":"+finishToGarageKms+":"+finishToGarageHrs);
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");*/
+
+        //copy this line inside API success
 
         Call<UpdatePojo> call=REST_CLIENT.sendJourneyDetails(v);
         call.enqueue(new Callback<UpdatePojo>() {
@@ -299,6 +333,7 @@ public class ResultFragment extends Fragment {
                         dbAdapter.deleteDutyUpdates(data.getDslipid());
                         dbAdapter.deleteTimeForDsno(data.getDslipid());
                         dbAdapter.deleteStatusForDsno(data.getDslipid());
+                        //dbAdapter.deleteLocUrl(stDsno);
 
                         //String isThere=dbAdapter.getTime(stDsno,"sign");
                        /// System.out.println("((((((((((((((**%%%%***((((((((((((((((("+isThere);
@@ -814,5 +849,61 @@ public class ResultFragment extends Fragment {
         return inSampleSize;
     }
 
+    public void sendLocationUpdates()
+    {
+        h1 = new Handler();
+        r1 = new Runnable() {
+            @Override
+            public void run() {
 
+                h1.postDelayed(this, 300000);//5 min
+
+                current_lat=gps.getLatitude();
+                current_long=gps.getLongitude();
+
+                System.out.println("Coordinates( "+current_lat+":::"+current_long+" )");
+                System.out.println("profileId in Showduty"+pref.getString("profileId", ""));
+
+                if(current_lat!=0.0&&current_long!=0.0) {
+
+                    JsonObject v = new JsonObject();
+                    v.addProperty("profileid", pref.getString("profileId", ""));
+                    v.addProperty("longitude", current_long);
+                    v.addProperty("latittude", current_lat);
+
+                    Call<Pojo> call = REST_CLIENT.updateCoordinates(v);
+                    call.enqueue(new Callback<Pojo>() {
+                        @Override
+                        public void onResponse(Call<Pojo> call, Response<Pojo> response) {
+
+                            if (response.isSuccessful()) {
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Pojo> call, Throwable t) {
+
+                            Toast.makeText(getActivity(), "Please check Internet connection!", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+
+
+            }
+        };
+
+        h1.post(r1);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        gps.stopUsingGPS();
+        if(h1!=null) {
+            h1.removeCallbacks(r1);
+        }
+    }
 }

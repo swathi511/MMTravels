@@ -25,7 +25,7 @@ import java.util.Date;
 public class DBAdapter {
 
     static final String DATABASE_NAME = "user.db";
-    static final int DATABASE_VERSION = 6;
+    static final int DATABASE_VERSION = 21;
     public static final int NAME_COLUMN = 1;
 
     public static final String TABLE_LATLNG = "create table if not exists "+"LATLNG_DETAILS"+
@@ -42,6 +42,17 @@ public class DBAdapter {
 
     public static final String TABLE_STORE_TIMES="create table if not exists "+"TIMES"+
             "( " +"DESC text,TIME text,DSNO text); ";
+
+    public static final String TABLE_STORE_LAT_LNG="create table if not exists "+"LATLNG"+
+            "( " +"DSNO  text,LATITUDE  double,LONGITUDE double,TIME_UPDATED text); ";
+
+    public static final String TABLE_STORE_URL="create table if not exists "+"LOC_URL"+
+            "( " +"DSNO  text,URL text); ";
+
+        public static final String TABLE_STORE_DISTANCE="create table if not exists "+"DISTCE"+
+            "( " +"DSNO  text,DIST float); ";
+
+
 
     // Variable to hold the database instance
     public SQLiteDatabase db;
@@ -135,10 +146,10 @@ public class DBAdapter {
         {
             if(cursor.isFirst())
             {
-                data=data+cursor.getString(1)+","+cursor.getString(2);
+                data=data+cursor.getString(1)+","+cursor.getString(2)+"#"+cursor.getString(5);
             }
             else {
-                data=data+"*"+cursor.getString(1)+","+cursor.getString(2);
+                data=data+"*"+cursor.getString(1)+","+cursor.getString(2)+"#"+cursor.getString(5);
             }
         }
 
@@ -533,10 +544,10 @@ public class DBAdapter {
 
             if(i==0)
             {
-                waypoints=c.getString(1)+","+c.getString(2);
+                waypoints=c.getDouble(1)+","+c.getDouble(2);
             }
             else {
-                waypoints=waypoints+"|"+c.getString(1)+","+c.getString(2);
+                waypoints=waypoints+"|"+c.getDouble(1)+","+c.getDouble(2);
             }
         }
 
@@ -555,6 +566,213 @@ public class DBAdapter {
 
         return waypoints;
     }
+
+    public int getWaypointsCount(String dsno)
+    {
+
+        db = dbHelper.getReadableDatabase();
+        float[] dist=new float[3];
+        long distance=0;
+
+        String sql="SELECT * FROM LATLNG WHERE DSNO ="+" '"+dsno+"' ";
+
+        Cursor c=db.rawQuery(sql,null);
+
+        return c.getCount();
+    }
+
+    public String getWaypointsForSnapToRoad(String dsno)
+    {
+        String waypoints="";
+
+        String st = "";
+        db = dbHelper.getReadableDatabase();
+        float[] dist=new float[3];
+        long distance=0;
+
+        String sql="SELECT * FROM LATLNG WHERE DSNO ="+" '"+dsno+"' ";
+
+        Cursor c=db.rawQuery(sql,null);
+
+        for(int i=0;i<c.getCount();i++)
+        {
+            if(c.getCount()<=100) {
+
+                c.moveToPosition(i);
+
+                if (i == 0) {
+                    waypoints = c.getString(1) + "," + c.getString(2);
+                } else {
+                    waypoints = waypoints + "|" + c.getString(1) + "," + c.getString(2);
+                }
+            }
+        }
+
+        return waypoints;
+    }
+
+    public String getIntervalWaypoints(String dsno)
+    {
+        String waypoints="";
+
+        String st = "";
+        db = dbHelper.getReadableDatabase();
+        float[] dist=new float[3];
+        long distance=0;
+
+        String sql="SELECT * FROM LATLNG WHERE DSNO ="+" '"+dsno+"' ";
+
+        Cursor c=db.rawQuery(sql,null);
+
+        for(int i=0;i<c.getCount();i++)
+        {
+            if(c.getCount()<=100) {
+
+                c.moveToPosition(i);
+
+                if (i == 0) {
+                    waypoints = c.getString(1) + "," + c.getString(2)+"#"+c.getString(3);
+                } else {
+                    waypoints = waypoints + "*" + c.getString(1) + "," + c.getString(2)+"#"+c.getString(3);
+                }
+            }
+        }
+
+        return waypoints;
+    }
+
+    public long insertLatLngEntry(String dsno,double latitude,double longitude,String timeUpdated)
+    {
+        db=dbHelper.getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        // Assign values for each row.
+        newValues.put("DSNO",dsno);
+        newValues.put("LATITUDE",latitude);
+        newValues.put("LONGITUDE",longitude);
+        newValues.put("TIME_UPDATED",timeUpdated);
+
+        // Insert the row into your table
+        long value=db.insert("LATLNG", null, newValues);
+        //  close();
+        return  value;
+    }
+
+    public void deleteLatLng(String dsno)
+    {
+        db=dbHelper.getReadableDatabase();
+        db.execSQL("delete from LATLNG WHERE DSNO ="+" '"+dsno+"' ");
+        // System.out.println("delete from LATLNG_DETAILS WHERE DSNO ="+" '"+dsno+"' ");
+        //System.out.println("deletion done.....latlng_data");
+    }
+
+
+    public long insertLocUrl(String dsno,String url)
+    {
+        db=dbHelper.getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        // Assign values for each row.
+        newValues.put("DSNO",dsno);
+        newValues.put("URL",url);
+
+        // Insert the row into your table
+        long value=db.insert("LOC_URL", null, newValues);
+        //  close();
+        return  value;
+    }
+
+    public String getLocUrl(String dsno)
+    {
+        String url="";
+
+        db = dbHelper.getReadableDatabase();
+
+        String sql="SELECT * FROM LOC_URL WHERE DSNO ="+" '"+dsno+"' ";
+
+        Cursor c=db.rawQuery(sql,null);
+
+        for(int i=0;i<c.getCount();i++)
+        {
+            c.moveToNext();
+
+            if(i==0)
+            {
+                url=c.getString(1);
+            }
+            else {
+
+                url=url+"*"+c.getString(1);
+            }
+        }
+
+        return url;
+    }
+
+    public void deleteLocUrl(String dsno)
+    {
+        db=dbHelper.getReadableDatabase();
+        db.execSQL("delete from LOC_URL WHERE DSNO ="+" '"+dsno+"' ");
+        // System.out.println("delete from LATLNG_DETAILS WHERE DSNO ="+" '"+dsno+"' ");
+        //System.out.println("deletion done.....latlng_data");
+    }
+
+
+    public long insertDist(String dsno,float dist)
+    {
+        db=dbHelper.getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        // Assign values for each row.
+        newValues.put("DSNO",dsno);
+        newValues.put("DIST",dist);
+
+        // Insert the row into your table
+        long value=db.insert("DISTCE", null, newValues);
+        //  close();
+        return  value;
+    }
+
+    public float getDist(String dsno)
+    {
+        String url="";
+        float d=0;
+
+        db = dbHelper.getReadableDatabase();
+
+        String sql="SELECT * FROM DISTCE WHERE DSNO ="+" '"+dsno+"' ";
+
+        Cursor c=db.rawQuery(sql,null);
+
+        for(int i=0;i<c.getCount();i++)
+        {
+            c.moveToNext();
+
+            d=c.getFloat(0);
+
+
+        }
+
+        return d;
+    }
+
+    public void deleteDist(String dsno)
+    {
+        db=dbHelper.getReadableDatabase();
+        db.execSQL("delete from DISTCE WHERE DSNO ="+" '"+dsno+"' ");
+        // System.out.println("delete from LATLNG_DETAILS WHERE DSNO ="+" '"+dsno+"' ");
+        //System.out.println("deletion done.....latlng_data");
+    }
+
+    public void updateDist(String dSNo,float dist)
+    {
+        db=dbHelper.getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put("DIST",dist);
+
+        // Assign values for each row.
+
+        // Insert the row into your table
+        db.update("DISTCE",newValues,"DSNO="+" '"+dSNo+"' ", null);
+    }
+
 
 
 
